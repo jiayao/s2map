@@ -61,8 +61,6 @@ def cell_id_to_json(cellid):
 from functools import wraps
 from flask import request, current_app
 
-S2S = "89c259a84,89c259afc,89c2584ac,89c2584b4,89c259abc,89c2584ec,89c258544,89c25855c,89c258554,89c259a94,89c259b14,89c259b0c,89c259a8c,89c259ac4,89c2584cc,89c259a54,89c258564,89c259b34,89c259aa4,89c259b54,89c258ff4,89c258504,89c258524,89c259b74,89c259ad4,89c2584bc,89c25851c,89c25854c,89c2584d4,89c259b2c,89c25853c,89c259b6c,89c259bac,89c259b4c,89c259004,89c2584fc,89c259a9c,89c259a5c,89c2584dc,89c259acc,89c259aac,89c2584c4,89c258ffc,89c259af4,89c259adc,89c259aec,89c259ae4,89c2584e4,89c259ab4,89c259b04,89c259b24,89c258574,89c258514,89c259b5c,89c259074,89c25900c,89c259b44,89c259b64,89c258534,89c258f8c,89c259b1c,89c259b3c,89c25856c,89c25852c,89c25850c"
-
 def jsonp(func):
     """Wraps JSONified output for JSONP requests."""
     @wraps(func)
@@ -79,17 +77,12 @@ def jsonp(func):
 
 @app.route('/api/s2cover', methods=['GET', 'POST'])
 def s2cover():
-    ids = S2S.split(",")
-    return jsonify({'cells': [cell_id_to_json(s2sphere.CellId.from_token(id.decode("ascii"))) for id in ids]})
-    #return "89c25997,89c25999"
-
+    pass
+    
 @app.route('/api/s2cells', methods=['GET', 'POST'])
 def s2cells():
-    import pdb
-#    pdb.set_trace()
     ids = request.form["cell_ids"].split(",")
     return jsonify({'cells': [cell_id_to_json(s2sphere.CellId.from_token(id.decode("ascii"))) for id in ids]})
-    #return "89c25997,89c25999"
     
 @app.route('/api/s2info', methods=['GET', 'POST'])
 @jsonp
