@@ -1,6 +1,6 @@
 requests
 lxml
 html2text
-Flask
+Flask==0.12.2
 gunicorn
 s2sphere

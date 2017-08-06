@@ -5,7 +5,7 @@ var baseurl = function(part) {
 var method = 'POST';
 if (window.location.host == 'localhost') {
   baseurl = function(part) {
-    return 'http://localhost:9000' + part + '?callback=?';
+    return 'http://localhost:5000' + part + '?callback=?';
   }
   method = 'GET';
 }
@@ -281,6 +281,19 @@ processBounds: function(bounds) {
   this.map.setView(centerPoint, zoom);
 },
 
+    fetchS2Cells: function(cell_ids) {
+	var data = {
+	    'cell_ids': cell_ids
+	};
+	$.ajax({
+            url: baseurl('/s2cells'),
+            type: method,
+            dataType: 'json',
+            data: data,
+            success: _.bind(this.renderS2Cells, this)
+	});
+    },
+    
 renderCovering: function(latlngs) {
   if (this.showS2Covering()) {
     var data = {
@@ -404,15 +417,15 @@ boundsCallback: function() {
   }
 
   var polygonPoints = []
-  if (points.length == 0) {
+  /*if (points.length == 0) {
     // try s2 parsing!
     this.idsCallback();
     return;
-  }
+  }*/
 
   this.resetDisplay();
 
-  if (points.length == 1 && !this.inCircleMode()  ) {
+  /*if (points.length == 1 && !this.inCircleMode()  ) {
     var regex2 = /@(\d+)$/;
     var matches = bboxstr.match(regex2);
     if (matches) {
@@ -425,8 +438,10 @@ boundsCallback: function() {
     var marker = new L.Marker(ll);
     this.renderMarkers([marker]);
     this.renderCovering([ll]);
-  } else if (this.inPolygonMode()) {
-    if (points.length == 2) {
+  } else */
+    if (this.inPolygonMode()) {
+      this.fetchS2Cells(this.$boundsInput.val());
+/*    if (points.length == 2) {
        var ll1 = points[0]
        var ll2 = points[1]
        var bounds = new L.LatLngBounds(ll1, ll2);
@@ -442,7 +457,7 @@ boundsCallback: function() {
     }
     var polygon = new L.Polygon(polygonPoints,
        {color: "#0000ff", weight: 1, fill: true, fillOpacity: 0.2});
-    this.renderPolygon(polygon, polygon.getBounds())
+    this.renderPolygon(polygon, polygon.getBounds())*/
   } else if (this.inCircleMode()) {
     var bounds = null;
     var radius = this.$radiusInput.val();
@@ -670,8 +685,9 @@ initialize: function() {
 },
 
 initMapPage: function() {
-  var placeholders = [
-   '40.74,-74.0',
+    var placeholders = [
+	'89c259a84,89c259afc',
+   //'40.74,-74.0',
    '40.74,-74.0,40.75,-74.1',
    'bbox: { \n' +
    '  ne: { ' +
